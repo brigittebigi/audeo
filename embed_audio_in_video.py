@@ -4,7 +4,12 @@
 # Dependencies: ffmpeg, sox, sppas
 
 # Authors notes:
-# Times are given as 00:02:59 for 2 minutes and 59 seconds
+# Times are given either as:
+#   - %HH:%MM:%SS.ms, or
+#   - in seconds
+# For example, 2 minutes and 59 seconds and 300 ms can be:
+#   - 00:02:59.3 or
+#   - 179.3
 # If audio is 48000Hz (1 frame = 0.000020833 seconds) and video is 25Hz 
 # (1 frame = 0.040 seconds), then, during one frame of a video, there are 
 # 1920 audio frames. During 1 millisecond, there are 48 frames in the audio.
@@ -137,8 +142,8 @@ parser.add_argument(
     "-c",
     metavar="time",
     required=False,
-    default="00:00:00",
-    help='Time of the start clap in the audio (default: 00:00:00).')
+    default="0",
+    help='Time of the start clap in the audio (default: 00:00).')
 
 parser.add_argument(
     "-v",
@@ -150,8 +155,8 @@ parser.add_argument(
     "-s",
     metavar="time",
     required=False,
-    default="00:00:00",
-    help='Time of the start clap in the video (default: 00:00:00).')
+    default="0",
+    help='Time of the start clap in the video (default: 00:00).')
 
 parser.add_argument(
     "-d",
@@ -201,7 +206,6 @@ args = parser.parse_args()
 
 step = 1
 
-
 # ----------------------------------------------------------------------------
 # Check and get things...
 # ----------------------------------------------------------------------------
@@ -220,23 +224,31 @@ wk = create_working_dir(args.w)
 input_audio = test_audio(args.a, wk)
 
 # Test the given video
-# TODO: GET fps AND input_video_size FROM THE GIVEN VIDEO.
+# TODO: GET fps FROM THE GIVEN VIDEO.
 input_video = args.v
 fname, input_video_ext = os.path.splitext(input_video)
 input_video_ext = input_video_ext.lower()
-input_video_size = "1440x1080"
 input_video_fps = 25
 input_video_frame_dur = 1. / float(input_video_fps)
 
 # convert given times in float (time in seconds)
 expected_duration = None
 if args.d:
-    expected_duration = time_to_seconds(args.d)
+    if ":" in args.d:
+        expected_duration = time_to_seconds(args.d)
+    else:
+        expected_duration = float(args.d)
     print("Given duration for the output video: {:.3f}".format(expected_duration))
-input_video_clap = time_to_seconds(args.s)
+if ":" in args.s:
+    input_video_clap = time_to_seconds(args.s)
+else:
+    input_video_clap = float(args.s)
 print("Given clap position in the input video: {:.3f} seconds"
       "".format(input_video_clap))
-input_audio_clap = time_to_seconds(args.c)
+if ":" in args.c:
+    input_audio_clap = time_to_seconds(args.c)
+else:
+    input_audio_clap = float(args.c)
 print("Given clap position in the input audio: {:.3f} seconds"
       "".format(input_audio_clap))
 step += 1
@@ -379,7 +391,7 @@ step += 1
 # Embed the audio into the video
 # ----------------------------------------------------------------------------
 
-if args.mp4 is not None:
+if args.mp4 is True:
     print_step(step, "Merge and compress video-audio")
     file_video_lossy = os.path.join(wk, "merged_lossy.mp4")
     print("Create a compressed video embedding a compressed audio (MP4): ")
@@ -392,7 +404,7 @@ if args.mp4 is not None:
     file_exists(file_video_lossy)
     step += 1
 
-if args.mkv is not None:
+if args.mkv is True:
     print_step(step, "Merge video-audio")
     print("Create a video embedding the audio (MKV)")
     file_video_lossless = os.path.join(wk, "merged_lossless.mkv")

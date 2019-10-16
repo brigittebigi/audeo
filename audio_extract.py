@@ -7,11 +7,9 @@
 
 import sys
 import os
-import shlex
-import subprocess
 from argparse import ArgumentParser
 
-from utils_video import extract_audio
+from src.utils_video import extract_audio
 
 # ----------------------------------------------------------------------------
 
