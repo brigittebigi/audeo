@@ -193,7 +193,8 @@ def merge_and_compress(video, audio, video_out, crf=18):
     """
     command = "ffmpeg "
     command += "-i '{:s}' ".format(video)
-    command += "-i '{:s}' ".format(audio)
+    if audio is not None:
+        command += "-i '{:s}' ".format(audio)
     command += "-f mp4 "
     command += "-vcodec libx264 "
     command += "-crf {:d} ".format(crf)
