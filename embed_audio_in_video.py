@@ -21,8 +21,8 @@ from argparse import ArgumentParser
 
 from src.utils import file_exists, print_step, time_to_seconds, seconds_to_time
 from src.utils import test_command
-from src.utils_video import extract_audio, trim_video_at_frame
-from src.utils_video import merge_video_audio, merge_and_compress
+from src.ffmpeg_video import extract_audio, trim_video_at_frame
+from src.ffmpeg_video import merge_video_audio, merge_and_compress
 from src.utils_audio import audio_duration, trim_audio, add_silence_to_audio
 from src.utils_audio import test_audio, extract_channel
 

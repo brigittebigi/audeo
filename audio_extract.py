@@ -9,7 +9,7 @@ import sys
 import os
 from argparse import ArgumentParser
 
-from src.utils_video import extract_audio
+from src.ffmpeg_video import extract_audio
 
 # ----------------------------------------------------------------------------
 
