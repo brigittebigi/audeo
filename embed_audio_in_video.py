@@ -165,6 +165,14 @@ parser.add_argument(
     help='Duration of the output video.')
 
 parser.add_argument(
+    "-FPS",
+    metavar="value",
+    required=False,
+    type=float,
+    default=25,
+    help='Frames per seconds of the video (default=25)')
+
+parser.add_argument(
     "-w",
     metavar="folder",
     required=False,
@@ -228,8 +236,8 @@ input_audio = test_audio(args.a, wk)
 input_video = args.v
 fname, input_video_ext = os.path.splitext(input_video)
 input_video_ext = input_video_ext.lower()
-input_video_fps = 25
-input_video_frame_dur = 1. / float(input_video_fps)
+input_video_fps = args.FPS
+input_video_frame_dur = 1. / input_video_fps
 
 # convert given times in float (time in seconds)
 expected_duration = None
